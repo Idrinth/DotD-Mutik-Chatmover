@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         DotD Mutik Chatmover
 // @namespace    http://idrinth.de/
-// @version      1.0.0
+// @version      1.0.1
 // @description  moves the alliance chat provided by mutik's script to a seperate window
 // @author       Idrinth
-// @match        http://www.kongregate.com/games/5thPlanetGames/dawn-of-the-dragons
+// @include      http://www.kongregate.com/games/5thplanetgames/dawn-of-the-dragons*
+// @include      http://kongregate.com/games/5thplanetgames/dawn-of-the-dragons*
 // @grant        none
 // ==/UserScript==
 window.setTimeout(function() {
