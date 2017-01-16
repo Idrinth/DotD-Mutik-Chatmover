@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DotD Mutik Chatmover
 // @namespace    http://idrinth.de/
-// @version      1.0.2
+// @version      1.0.3
 // @description  moves the alliance chat provided by mutik's script to a seperate window
 // @author       Idrinth
 // @include      http://www.kongregate.com/games/5thplanetgames/dawn-of-the-dragons*
@@ -38,7 +38,7 @@ if(document.getElementById('alliance_room')) {
     document.getElementById('chat_room_tabs').appendChild(r);
     var styles = document.createElement('style');
     styles.appendChild(document.createTextNode('#alliance_tab{display:none}'
-                                               +'#alliance_room{width:300px;background:#aaa;height:80%;position:fixed;top:10%}'
+                                               +'#alliance_room{z-index: 1000;width:300px;background:#aaa;height:80%;position:fixed;top:10%}'
                                                +'#alliance_room.disabled{display:none}'
                                                +'#alliance_room > div{padding:1px;box-sizing:border-box}'
                                                +'#alliance_users{height:20%;overflow-y:scroll;background:rgba(0,0,0,0.25);color:#ddd}'
