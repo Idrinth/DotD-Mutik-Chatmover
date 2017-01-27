@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         DotD Mutik Chatmover
 // @namespace    http://idrinth.de/
-// @version      1.2.0
+// @version      1.2.1
 // @description  moves the alliance chat provided by mutik's script(https://greasyfork.org/en/scripts/406-mutik-s-dotd-script) to a seperate window. Developement at https://github.com/Idrinth/DotD-Mutik-Chatmover
 // @author       Idrinth
 // @include      http://www.kongregate.com/games/5thplanetgames/dawn-of-the-dragons*
@@ -42,21 +42,48 @@ window.setTimeout ( function () {
               room.setAttribute ( 'draggable', 'true' );
               room.addEventListener ( 'mousedown', function (e) {
                   var target = document.getElementById ( 'alliance_room' );
+                  target.mouseDown=true;
                   target.dotdmutikchatmover = {
                       x: target.getBoundingClientRect ().left - e.pageX,
                       y: target.getBoundingClientRect ().top - e.pageY
                   };
               } );
-              room.addEventListener ( 'drag', function (e) {
+              var drag = function (e) {
                   if ( !e.pageX || !e.pageY ) {
                       return;
                   }
                   var target = document.getElementById ( 'alliance_room' );
+                  target.wasDragged=true;
                   target.dotdmutikchatmover = target.dotdmutikchatmover ? target.dotdmutikchatmover : {
                       x: 0,
                       y: 0
                   };
                   target.setAttribute ( 'style', 'left:' + ( e.pageX + target.dotdmutikchatmover.x ) + 'px;top:' + ( e.pageY + target.dotdmutikchatmover.y ) + 'px' );
+              };
+              var mouseUp = function (e) {
+                  document.getElementById ( 'alliance_room' ).mouseDown=false;
+              };
+              room.ondragstart=function(e){
+                  e.dataTransfer.setData('text/plain', 'alliance_room');
+              }
+              document.getElementsByTagName('body')[0].addEventListener ( 'mouseup', mouseUp );
+              room.addEventListener ( 'drag', drag );
+              room.addEventListener ( 'dragend', drag );
+              room.addEventListener ( 'drop', drag );
+              room.addEventListener ( 'dragend', mouseUp );
+              room.addEventListener ( 'drop', mouseUp );
+              document.getElementsByTagName('body')[0].addEventListener ( 'mousemove', function (e) {
+                  if ( !e.pageX || !e.pageY) {
+                      return;
+                  }
+                  var target = document.getElementById ( 'alliance_room' );
+                  if(!target.wasDragged&&target.mouseDown) {
+                      target.dotdmutikchatmover = target.dotdmutikchatmover ? target.dotdmutikchatmover : {
+                          x: 0,
+                          y: 0
+                      };
+                      target.setAttribute ( 'style', 'left:' + ( e.pageX + target.dotdmutikchatmover.x ) + 'px;top:' + ( e.pageY + target.dotdmutikchatmover.y ) + 'px' );
+                  }
               } );
               room.addEventListener ( 'click', function (e) {
                   if ( !e.target.getAttribute('class') || !(e.target.getAttribute('class')).match(/(^| )chatRaidLink($| )/) ) {
@@ -81,7 +108,7 @@ window.setTimeout ( function () {
               var styles = document.createElement ( 'style' );
               styles.appendChild ( document.createTextNode ( '#alliance_tab{display:none}'
                       + '#alliance_room{z-index: 10000000;width:300px;background:#aaa;height:80%;position:fixed;top:10%;}'
-                      + '#alliance_room > span{color:red;display:block;background-color:#fff;background-image:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(255,255,255,0.1),rgba(0,0,0,0.25)),linear-gradient(to right,rgba(0,0,0,0.1),rgba(255,255,255,0.1),rgba(0,0,0,0.25));width:1em;height:1em;padding:3px;position:absolute;border-radius:3px;top:0;margin-top:-0.25em;font-size:150%;right:0;margin-right:0.25em;}'
+                      + '#alliance_room > span{cursor:move;-moz-user-select: none;-webkit-user-select: none;user-select: none;color:red;display:block;background-color:#fff;background-image:linear-gradient(to bottom,rgba(0,0,0,0.1),rgba(255,255,255,0.1),rgba(0,0,0,0.25)),linear-gradient(to right,rgba(0,0,0,0.1),rgba(255,255,255,0.1),rgba(0,0,0,0.25));width:1em;height:1em;padding:3px;position:absolute;border-radius:3px;top:0;margin-top:-0.25em;font-size:150%;right:0;margin-right:0.25em;}'
                       + '#alliance_room.disabled{display:none}'
                       + '#alliance_room > div{padding:1px;box-sizing:border-box}'
                       + '#alliance_users{height:20%;overflow-y:scroll;background:rgba(0,0,0,0.25);color:#ddd}'
